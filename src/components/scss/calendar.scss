@@ -1,0 +1,17 @@
+.swapper {
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+
+    .inactive {
+        color: gray;
+    }
+    .active {
+        color: #ffffff;
+    }
+}
