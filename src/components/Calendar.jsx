@@ -1,12 +1,13 @@
 import { useState } from "react";
 import * as dateFns from "date-fns";
-import "./scss/calendar.scss"
+import Button from "../atomes/Button";
+import "./scss/calendar.scss";
 
 const formatOfYear = "yyy";
 const formatOfMonth = "MMM";
 const formatOfWeek = "eee";
 const formatOfDay = "d";
-const formatOfHour = "H";
+// const formatOfHour = "H";
 
 export default function Calendar() {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -46,6 +47,8 @@ export default function Calendar() {
                 <span key={date} className={!dateFns.isSameMonth(date, currentDate) ? 'inactive' : 'active'}>{dateFns.format(date, formatOfDay)}</span>
             ))}
         </div>
+        
+            <Button linkTo="/create-form/2024-04-19T10:48:04.132+00:00">Enregistrer</Button>
     </>
     )
 }

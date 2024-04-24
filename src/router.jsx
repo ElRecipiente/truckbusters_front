@@ -22,7 +22,7 @@ const router = createBrowserRouter([
                 path: 'appointment',
                 element: <Appointment />
             }, {
-                path: 'create-form',
+                path: 'create-form/:date',
                 element: <CreateForm />
             }, {
                 path: 'confirmation',

@@ -1,5 +1,5 @@
 export default function Confirmation() {
     return (
-        <h1>CONFIRMATION</h1>
+        <h1>Confirmation du RDV</h1>
     )
 }
