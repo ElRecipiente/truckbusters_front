@@ -3,7 +3,7 @@
     line-height: 1.5;
     font-weight: 400;
 
-    color: rgba(255, 255, 255, 0.87);
+    color: #ffffff;
     background-color: #1E1E1E;
 
     font-synthesis: none;
@@ -17,4 +17,9 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    text-decoration: none;
+}
+
+a {
+    color: #ffffff;
 }
