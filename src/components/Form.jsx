@@ -1,12 +1,13 @@
 import { useForm } from "react-hook-form";
-import { useParams, redirect } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Form() {
 
     const { date } = useParams();
-
     const { register, handleSubmit } = useForm();
+    const navigate = useNavigate();
+
 
     const onSubmit = async (data) => {
 
@@ -32,10 +33,7 @@ export default function Form() {
             await axios.post('http://localhost:3333/api/v1/appointment/book', formattedData);
 
             console.log("Envoi réussi !");
-
-            redirect("/confirmation");
-
-            
+            navigate("/confirmation");
 
         } catch (error) {
 

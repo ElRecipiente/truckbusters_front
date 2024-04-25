@@ -12,7 +12,6 @@ const router = createBrowserRouter([
         path: '/',
         element: <RouterLayout />,
         errorElement: <PageError />,
-        loader: () => fetch('http://localhost:3333/api/v1/info'),
         children: [
             {
                 path: '',
