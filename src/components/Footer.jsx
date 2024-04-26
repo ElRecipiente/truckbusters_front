@@ -15,7 +15,7 @@ export default function Footer() {
         const fetchData = async () => {
 
             try {
-                const response = await axios.get('http://localhost:3333/api/v1/info');
+                const response = await axios.get('https://expresscda.onrender.com/api/v1/info');
 
                 // Set data after fetch
                 setData(response.data);
