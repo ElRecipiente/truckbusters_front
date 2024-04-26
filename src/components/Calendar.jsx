@@ -77,7 +77,7 @@ export default function Calendar() {
         const fetchTruckLiftNumber = async () => {
 
             try {
-                const response = await axios.get('https://expresscda.onrender.com/api/v1/config');
+                const response = await axios.get('http://localhost:3333/api/v1/config');
 
                 // Set data after fetch
                 setTruckLiftNumber(response.data);
@@ -100,7 +100,7 @@ export default function Calendar() {
         const fetchStartDate = async () => {
 
             try {
-                const response = await axios.get('https://expresscda.onrender.com/api/v1/appointment');
+                const response = await axios.get('http://localhost:3333/api/v1/appointment');
 
                 // Set data after fetch
                 setAllAppointment(response.data);
