@@ -1,5 +1,7 @@
 export default function Confirmation() {
-    return (
-        <h1>Confirmation du RDV</h1>
+    return (<>
+        <h1>Confirmation</h1>
+        <p>Votre rdv a bien été pris ! Vous recevrez un mail de confirmation indiquant les informations.</p>
+        </>
     )
 }

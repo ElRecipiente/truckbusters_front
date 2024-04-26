@@ -53,37 +53,90 @@
 //     )
 // }
 
-import Button from '../atomes/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { format, addHours, startOfWeek, addDays, subDays, isBefore } from 'date-fns';
+import axios from 'axios';
+import "./scss/calendar.scss"
+import { useNavigate } from 'react-router-dom';
 
 export default function Calendar() {
-
-    const [currentDay, setCurrentDay] = useState();
-    console.log(currentDay);
-
-    // Define starting & ending hour
+    // Définir les heures de début et de fin de la journée
     const startHour = 6;
     const endHour = 16;
-    
-    // Number of slots by day
-    const slotNumber = (endHour - startHour) / 2;
+    // Nombre de créneaux horaires par jour
+    const numSlots = (endHour - startHour) / 2;
+    // Nombre de jours affiché dans la semaine
+    const weekDays = 7;
 
-    // Fonction pour générer les créneaux horaires
+    // Nombre de rdv disponible par créneau
+    const [truckLiftNumber, setTruckLiftNumber] = useState();
+    // Nombre de rdv disponible par créneau
+    const [allAppointment, setAllAppointment] = useState();
+
+    useEffect(() => {
+        const fetchTruckLiftNumber = async () => {
+
+            try {
+                const response = await axios.get('https://expresscda.onrender.com/api/v1/config');
+
+                // Set data after fetch
+                setTruckLiftNumber(response.data);
+                console.log(response.data)
+
+            } catch (error) {
+                console.error('Erreur lors de la récupération des données :', error);
+            }
+        };
+
+        // If data are not fetched
+        if (!truckLiftNumber) {
+            fetchTruckLiftNumber();
+        }
+    }, [truckLiftNumber]);
+
+
+
+    useEffect(() => {
+        const fetchStartDate = async () => {
+
+            try {
+                const response = await axios.get('https://expresscda.onrender.com/api/v1/appointment');
+
+                // Set data after fetch
+                setAllAppointment(response.data);
+                console.log(response.data)
+
+            } catch (error) {
+                console.error('Erreur lors de la récupération des données :', error);
+            }
+        };
+
+        // If data are not fetched
+        if (!allAppointment) {
+            fetchStartDate();
+        }
+    }, [allAppointment]);
+
+
+
+    // Time slots function
     const generateTimeSlots = (startDate) => {
+
         const timeSlots = [];
+
         let currentDate = startOfWeek(startDate);
 
-        // Générer les créneaux horaires pour chaque jour de la semaine
-        for (let i = 0; i < 7; i++) {
+        // Generate all day slots
+        for (let i = 0; i < weekDays; i++) {
             const daySlots = [];
-            for (let j = 0; j < slotNumber; j++) {
+            for (let j = 0; j < numSlots; j++) {
                 const startTime = addHours(currentDate, startHour + j * 2);
                 const endTime = addHours(startTime, 2);
                 daySlots.push({
                     start: startTime,
                     end: endTime,
-                    appointmentAvailable: true // Initialiser tous les créneaux comme disponibles
+                    // Available appointment true by default
+                    appointmentAvailable: true 
                 });
             }
             timeSlots.push(daySlots);
@@ -95,15 +148,14 @@ export default function Calendar() {
     const [startDate, setStartDate] = useState(new Date());
     const [timeSlots, setTimeSlots] = useState(generateTimeSlots(startDate));
 
-    // Fonction pour réserver un rendez-vous
-    const reserveAppointment = (dayIndex, slotIndex) => {
-        const updatedTimeSlots = [...timeSlots];
-        updatedTimeSlots[dayIndex][slotIndex].appointmentAvailable = false;
-        setTimeSlots(updatedTimeSlots);
-        // Récupérer les données de date et heure pour le rendez-vous réservé
-        const selectedDateTime = updatedTimeSlots[dayIndex][slotIndex].start;
-        // Rediriger vers la page de formulaire avec les données de date et heure
-        // history.push('/form', { selectedDateTime });
+    const navigate = useNavigate();
+
+    // Book appointment function
+    const bookAppointment = (dayIndex, slotIndex) => {
+        // Get date & hour data
+        const selectedDateTime = timeSlots[dayIndex][slotIndex].start;
+        // Redirect to form with selected date time
+        navigate(`/create-form/${selectedDateTime}`);
         console.log("Rendez-vous réservé pour :", selectedDateTime);
     };
 
@@ -114,7 +166,8 @@ export default function Calendar() {
     };
 
     const goToPreviousWeek = () => {
-        if (isBefore(startDate, new Date())) return; // Vérifier si la semaine précédente est antérieure à la semaine actuelle
+        // Check if startDate is before new date
+        if (isBefore(startDate, new Date())) return;
         const previousWeekStartDate = subDays(startDate, 7);
         setStartDate(previousWeekStartDate);
         setTimeSlots(generateTimeSlots(previousWeekStartDate));
@@ -122,58 +175,49 @@ export default function Calendar() {
 
     return (
         <div>
+            {/* Nav between weeks buttons */}
+            <div className="navigation">
+                <div onClick={goToPreviousWeek} ></div>
+                <div onClick={goToNextWeek}></div>
+            </div>
             {/* Header: Jours de la semaine */}
-            <div style={{ display: 'flex' }}>
-                <div style={{ flex: '0 0 auto', width: '100px' }}></div>
+            <div className="table-head">
+                <div className="day-label"></div>
                 {timeSlots[0].map((slot, index) => (
-                    <div key={index} style={{ flex: '1 1 auto', textAlign: 'center' }}>
-                        {format(slot.start, 'eee dd/MM')}
+                    <div key={index} className="day-label">
+                        {format(addDays(startDate, index), 'eee dd/MM')}
                     </div>
                 ))}
             </div>
 
             {/* Corps du calendrier */}
-            <div style={{ display: 'flex' }}>
+            <div className="calendar-body">
                 {/* Colonnes des heures */}
-                <div style={{ flex: '0 0 auto', width: '100px' }}>
-                    {Array.from({ length: slotNumber }, (_, i) => (
-                        <div key={i} style={{ textAlign: 'center' }}>
+                <div className="time-column">
+                    {Array.from({ length: numSlots }, (_, i) => (
+                        <div key={i} className="time-slot">
                             {`${startHour + i * 2}:00 - ${startHour + i * 2 + 2}:00`}
                         </div>
                     ))}
                 </div>
 
                 {/* Cases du calendrier */}
-                <div style={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column' }}>
-                    {timeSlots.map((daySlots, dayIndex) => (
-                        <div key={dayIndex} style={{ display: 'flex' }}>
-                            {daySlots.map((slot, slotIndex) => (
+                <div className="day-column">
+                    {Array.from({ length: numSlots }, (_, i) => (
+                        <div key={i} className="slot-row">
+                            {timeSlots.map((daySlots, dayIndex) => (
                                 <div
-                                    key={slotIndex}
-                                    style={{
-                                        flex: '1 1 auto',
-                                        textAlign: 'center',
-                                        backgroundColor: slot.appointmentAvailable ? 'lightgreen' : 'lightgray',
-                                        cursor: slot.appointmentAvailable ? 'pointer' : 'not-allowed',
-                                        borderRight: '1px solid #ccc',
-                                        borderBottom: '1px solid #ccc'
-                                    }}
-                                    onClick={() => slot.appointmentAvailable && reserveAppointment(dayIndex, slotIndex)}
+                                    key={dayIndex}
+                                    className={daySlots[i].appointmentAvailable ? "slot available" : "slot unavailable"}
+                                    onClick={() => daySlots[i].appointmentAvailable && bookAppointment(dayIndex, i)}
                                 >
-                                    {format(slot.start, 'HH:mm')}
+                                    {daySlots[i].appointmentAvailable ?  "Dispo": "Pas dispo" }
                                 </div>
                             ))}
                         </div>
                     ))}
                 </div>
             </div>
-
-            {/* Boutons pour naviguer vers les semaines suivantes/précédentes */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-                <button onClick={goToPreviousWeek}>Semaine précédente</button>
-                <button onClick={goToNextWeek}>Semaine suivante</button>
-            </div>
-            <Button linkTo="/create-form/2024-04-19T10:48:04.132+00:00">Enregistrer</Button>
         </div>
     );
 }

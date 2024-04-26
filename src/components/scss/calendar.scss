@@ -1,17 +1,54 @@
-.swapper {
-    width: fit-content;
-    margin: 0 auto;
+/* AppointmentCalendar.css */
+.table-head {
+    display: flex;
 }
 
-.calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1rem;
+.day-label {
+    flex: 1 1 auto;
+    text-align: center;
+}
 
-    .inactive {
-        color: gray;
-    }
-    .active {
-        color: #ffffff;
-    }
+.calendar-body {
+    display: flex;
+}
+
+.time-column {
+    flex: 0 0 auto;
+    width: 100px;
+}
+
+.day-column {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.time-slot {
+    text-align: center;
+}
+
+.slot-row {
+    display: flex;
+}
+
+.slot {
+    flex: 1 1 auto;
+    text-align: center;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.available {
+    background-color: lightgreen;
+}
+
+.unavailable {
+    background-color: lightgray;
+}
+
+.navigation {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 }

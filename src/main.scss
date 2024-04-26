@@ -1,5 +1,5 @@
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
     line-height: 1.5;
     font-weight: 400;
 
@@ -21,5 +21,14 @@
 }
 
 a {
+    display: block;
     color: #ffffff;
+    width: fit-content;
+}
+
+.buttonCTA {
+    border: none;
+    width: fit-content;
+    padding: 1em;
+    background-color: #F57E26;
 }
